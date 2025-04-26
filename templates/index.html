@@ -9,68 +9,97 @@
 </head>
 <body>
 
-    <div class="container my-4">
-        <h1 class="text-center mb-4">🌎 GeoMap - Mapa de Ubicaciones</h1>
+<div class="container my-4">
+    <h1 class="text-center mb-4">🌎 GeoMap - Mapa de Ubicaciones</h1>
 
-        <div class="row mb-4 justify-content-center">
-            <div class="col-md-4">
-                <select id="categoriaFiltro" class="form-select">
-                    <option value="">Todas las Categorías</option>
-                </select>
-            </div>
+    <!-- Filtro de categorías -->
+    <div class="row mb-4 justify-content-center">
+        <div class="col-md-4">
+            <select id="categoriaFiltro" class="form-select">
+                <option value="">Todas las Categorías</option>
+            </select>
         </div>
+    </div>
 
-        <div id="map"></div>
-        <h2 class="text-center">🔍 Buscar Lugares Cercanos</h2>
+    <!-- Mapa -->
+    <div id="map"></div>
 
-<form id="buscarForm" class="row g-3 justify-content-center">
-    <div class="col-md-3">
-        <input type="number" id="buscarLatitud" class="form-control" placeholder="Latitud" step="any" required>
+    <!-- Buscar lugares cercanos -->
+    <h2 class="text-center mt-5">🔍 Buscar Lugares Cercanos</h2>
+    <form id="buscarForm" class="row g-3 justify-content-center">
+        <div class="col-md-3">
+            <input type="number" id="buscarLatitud" class="form-control" placeholder="Latitud" step="any" required>
+        </div>
+        <div class="col-md-3">
+            <input type="number" id="buscarLongitud" class="form-control" placeholder="Longitud" step="any" required>
+        </div>
+        <div class="col-md-3">
+            <input type="number" id="buscarRadio" class="form-control" placeholder="Radio en Km" step="any" required>
+        </div>
+        <div class="col-md-3 d-grid">
+            <button type="button" onclick="buscarCercanos()" class="btn btn-primary">Buscar Cercanos</button>
+        </div>
+    </form>
+
+    <!-- Agregar nueva ubicación -->
+    <h2 class="text-center mt-5">➕ Agregar Nueva Ubicación</h2>
+    <form id="addForm" class="row g-3 justify-content-center mt-3">
+        <div class="col-md-3">
+            <input type="text" id="nombre" class="form-control" placeholder="Nombre" required>
+        </div>
+        <div class="col-md-3">
+            <input type="text" id="descripcion" class="form-control" placeholder="Descripción" required>
+        </div>
+        <div class="col-md-2">
+            <input type="number" id="latitud" class="form-control" placeholder="Latitud" step="any" required>
+        </div>
+        <div class="col-md-2">
+            <input type="number" id="longitud" class="form-control" placeholder="Longitud" step="any" required>
+        </div>
+        <div class="col-md-3">
+            <select id="categoria" class="form-select" required>
+                <option value="">Selecciona Categoría</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-success">Agregar</button>
+        </div>
+    </form>
+</div>
+
+<!-- Agregar nueva categoría -->
+<h2 class="text-center mt-5">➕ Agregar Nueva Categoría</h2>
+<form id="addCategoriaForm" class="row g-3 justify-content-center mt-3">
+    <div class="col-md-4">
+        <input type="text" id="nuevaCategoria" class="form-control" placeholder="Nombre de Categoría" required>
     </div>
-    <div class="col-md-3">
-        <input type="number" id="buscarLongitud" class="form-control" placeholder="Longitud" step="any" required>
-    </div>
-    <div class="col-md-3">
-        <input type="number" id="buscarRadio" class="form-control" placeholder="Radio en Km" step="any" required>
-    </div>
-    <div class="col-md-3 d-grid">
-        <button type="button" onclick="buscarCercanos()" class="btn btn-primary">Buscar Cercanos</button>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Agregar Categoría</button>
     </div>
 </form>
 
 
-        <h2 class="text-center mt-5">➕ Agregar Nueva Ubicación</h2>
+<h1></h1>
 
-        <form id="addForm" class="row g-3 justify-content-center mt-3">
-            <div class="col-md-3">
-                <input type="text" id="nombre" class="form-control" placeholder="Nombre" required>
-            </div>
-            <div class="col-md-3">
-                <input type="text" id="descripcion" class="form-control" placeholder="Descripción" required>
-            </div>
-            <div class="col-md-2">
-                <input type="number" id="latitud" class="form-control" placeholder="Latitud" step="any" required>
-            </div>
-            <div class="col-md-2">
-                <input type="number" id="longitud" class="form-control" placeholder="Longitud" step="any" required>
-            </div>
-            <div class="col-md-3">
-                <select id="categoria" class="form-select" required>
-                    <option value="">Selecciona Categoría</option>
-                </select>
-            </div>
-            <div class="col-md-2 d-grid">
-                <button type="submit" class="btn btn-success">Agregar</button>
-            </div>
-        </form>
-    </div>
+<!-- Librerías externas primero -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="/static/js/api.js"></script>
-    <script src="/static/js/eliminar.js"></script>
-    <script src="/static/js/editar.js"></script>
-    <script src="/static/js/mapa.js"></script>
-    <script src="/static/js/buscar.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Ahora tus scripts locales -->
+<script src="/static/js/api.js"></script>
+<script src="/static/js/mapa.js"></script>
+<script src="/static/js/eliminar.js"></script>
+<script src="/static/js/editar.js"></script>
+<script src="/static/js/buscar.js"></script>
+<script src="/static/js/categoria.js"></script>
+
+<!-- Inicialización al cargar todo -->
+<script>
+    cargarCategorias().then(() => {
+        cargarUbicaciones();
+    });
+</script>
+
 </body>
 </html>

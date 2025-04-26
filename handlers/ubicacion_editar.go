@@ -1,4 +1,3 @@
-// handlers/ubicacion_editar.go
 package handlers
 
 import (
@@ -15,10 +14,11 @@ func EditarUbicacion(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var datos struct {
-		ID          int    `json:"id"`
-		Nombre      string `json:"nombre"`
-		Descripcion string `json:"descripcion"`
-		CategoriaID int    `json:"categoria_id"`
+		ID          int     `json:"id"`
+		Nombre      string  `json:"nombre"`
+		Descripcion string  `json:"descripcion"`
+		Latitud     float64 `json:"latitud"`
+		Longitud    float64 `json:"longitud"`
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&datos)
@@ -27,8 +27,10 @@ func EditarUbicacion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = models.DB.Exec(`UPDATE ubicaciones SET nombre = ?, descripcion = ?, categoria_id = ? WHERE id = ?`,
-		datos.Nombre, datos.Descripcion, datos.CategoriaID, datos.ID)
+	_, err = models.DB.Exec(`UPDATE ubicaciones 
+		SET nombre = ?, descripcion = ?, latitud = ?, longitud = ?
+		WHERE id = ?`,
+		datos.Nombre, datos.Descripcion, datos.Latitud, datos.Longitud, datos.ID)
 
 	if err != nil {
 		http.Error(w, "Error al actualizar ubicación", http.StatusInternalServerError)

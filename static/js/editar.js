@@ -1,32 +1,42 @@
 // static/js/editar.js
 
-async function editarUbicacion(id, nombreActual, descripcionActual, categoriaActual) {
-    const nuevoNombre = prompt("Nuevo nombre:", nombreActual);
-    if (nuevoNombre === null) return;
-
-    const nuevaDescripcion = prompt("Nueva descripción:", descripcionActual);
-    if (nuevaDescripcion === null) return;
-
-    const nuevaCategoria = prompt("Nuevo ID de categoría:", categoriaActual);
-    if (nuevaCategoria === null) return;
-
-    const res = await fetch(`/api/editar`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
+async function editarUbicacion(ubicacion) {
+    const { value: formValues } = await Swal.fire({
+        title: 'Editar Ubicación',
+        html:
+            `<input id="swal-nombre" class="swal2-input" placeholder="Nombre" value="${ubicacion.nombre}">` +
+            `<input id="swal-descripcion" class="swal2-input" placeholder="Descripción" value="${ubicacion.descripcion}">` +
+            `<input id="swal-latitud" class="swal2-input" placeholder="Latitud" value="${ubicacion.latitud}">` +
+            `<input id="swal-longitud" class="swal2-input" placeholder="Longitud" value="${ubicacion.longitud}">`,
+        focusConfirm: false,
+        preConfirm: () => {
+            return {
+                nombre: document.getElementById('swal-nombre').value,
+                descripcion: document.getElementById('swal-descripcion').value,
+                latitud: parseFloat(document.getElementById('swal-latitud').value),
+                longitud: parseFloat(document.getElementById('swal-longitud').value),
+                id: ubicacion.id
+            };
         },
-        body: JSON.stringify({
-            id: id,
-            nombre: nuevoNombre,
-            descripcion: nuevaDescripcion,
-            categoria_id: parseInt(nuevaCategoria)
-        })
+        showCancelButton: true,
+        confirmButtonText: 'Actualizar',
+        cancelButtonText: 'Cancelar'
     });
 
-    if (res.status === 200) {
-        alert("✅ ¡Ubicación actualizada!");
-        location.reload();
-    } else {
-        alert("❌ Error al actualizar ubicación");
+    if (formValues) {
+        const res = await fetch(`/api/editar?id=${formValues.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formValues)
+        });
+
+        if (res.status === 200) {
+            Swal.fire('¡Actualizado!', 'La ubicación fue editada exitosamente.', 'success');
+            cargarUbicaciones();
+        } else {
+            Swal.fire('Error', 'No se pudo actualizar.', 'error');
+        }
     }
 }

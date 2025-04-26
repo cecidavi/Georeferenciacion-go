@@ -19,12 +19,35 @@ async function cargarUbicaciones() {
     data.forEach(u => {
         if (!categoriaSeleccionada || categoriaSeleccionada == u.categoria_id) {
             const marker = L.marker([u.latitud, u.longitud])
-                .addTo(markersLayer)
-                .bindPopup(`
-                    <b>${u.nombre}</b><br>${u.descripcion}<br><i>${u.categoria}</i><br>
-                    <button onclick="editarUbicacion(${u.id}, '${u.nombre}', '${u.descripcion}', ${u.categoria_id})" class="btn btn-primary btn-sm mt-2">Editar</button>
-                    <button onclick="eliminarUbicacion(${u.id})" class="btn btn-danger btn-sm mt-2">Eliminar</button>
-                `);
+                .addTo(markersLayer);
+
+            // Crear el contenido dinámico del popup
+            const popupContent = document.createElement('div');
+            popupContent.innerHTML = `
+                <b>${u.nombre}</b><br>${u.descripcion}<br><i>${u.categoria}</i><br>
+            `;
+
+            // Botón Editar
+            const btnEditar = document.createElement('button');
+            btnEditar.className = 'btn btn-primary btn-sm mt-2 me-2';  // btn-sm = pequeño, me-2 = margin-end
+            btnEditar.textContent = 'Editar';
+            btnEditar.addEventListener('click', () => {
+                editarUbicacion(u);
+            });
+
+            // Botón Eliminar
+            const btnEliminar = document.createElement('button');
+            btnEliminar.className = 'btn btn-danger btn-sm mt-2';
+            btnEliminar.textContent = 'Eliminar';
+            btnEliminar.addEventListener('click', () => {
+                eliminarUbicacion(u.id);
+            });
+
+            // Agregamos los botones al popup
+            popupContent.appendChild(btnEditar);
+            popupContent.appendChild(btnEliminar);
+
+            marker.bindPopup(popupContent);
         }
     });
 }
@@ -36,6 +59,9 @@ async function cargarCategorias() {
 
     const filtro = document.getElementById('categoriaFiltro');
     const selector = document.getElementById('categoria');
+
+    filtro.innerHTML = `<option value="">Todas las Categorías</option>`;
+    selector.innerHTML = `<option value="">Selecciona Categoría</option>`;
 
     categorias.forEach(cat => {
         const optionFiltro = document.createElement('option');
@@ -55,22 +81,11 @@ document.getElementById('categoriaFiltro').addEventListener('change', cargarUbic
 
 // Capturar clic en el mapa para poner latitud/longitud
 map.on('click', function(e) {
-    const lat = e.latlng.lat.toFixed(6);
-    const lng = e.latlng.lng.toFixed(6);
-
-    // Para agregar nueva ubicación
-    document.getElementById('latitud').value = lat;
-    document.getElementById('longitud').value = lng;
-
-    // Para búsqueda de lugares cercanos
-    const buscarLat = document.getElementById('buscarLatitud');
-    const buscarLng = document.getElementById('buscarLongitud');
-    if (buscarLat && buscarLng) {
-        buscarLat.value = lat;
-        buscarLng.value = lng;
-    }
+    document.getElementById('latitud').value = e.latlng.lat.toFixed(6);
+    document.getElementById('longitud').value = e.latlng.lng.toFixed(6);
+    document.getElementById('buscarLatitud').value = e.latlng.lat.toFixed(6);
+    document.getElementById('buscarLongitud').value = e.latlng.lng.toFixed(6);
 });
-
 
 // Evento submit para agregar nueva ubicación
 document.getElementById('addForm').addEventListener('submit', async function(e) {
@@ -90,13 +105,16 @@ document.getElementById('addForm').addEventListener('submit', async function(e) 
     });
 
     if (res.status === 201) {
-        alert("✅ ¡Ubicación agregada!");
+        Swal.fire('¡Agregado!', 'La ubicación fue agregada correctamente.', 'success');
         cargarUbicaciones();
         document.getElementById('addForm').reset();
     } else {
-        alert("❌ Error al agregar ubicación");
+        Swal.fire('Error', 'No se pudo agregar la ubicación.', 'error');
     }
 });
+
+
+
 
 // Inicialización
 cargarCategorias().then(cargarUbicaciones);

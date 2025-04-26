@@ -11,10 +11,11 @@ func main() {
 
 	http.HandleFunc("/api/ubicaciones", handlers.GetUbicaciones)
 	http.HandleFunc("/api/agregar", handlers.AgregarUbicacion)
-	http.HandleFunc("/api/categorias", handlers.GetCategorias)
+	http.HandleFunc("/api/categorias", handlers.CategoriasHandler) // <-- Cambiar aquí
 	http.HandleFunc("/api/eliminar", handlers.EliminarUbicacion)
 	http.HandleFunc("/api/editar", handlers.EditarUbicacion)
 	http.HandleFunc("/api/buscar-cercanos", handlers.BuscarUbicacionesCercanas)
+	// http.HandleFunc("/api/agregar-categoria", handlers.AgregarCategoria)  <-- Elimina esta línea
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 

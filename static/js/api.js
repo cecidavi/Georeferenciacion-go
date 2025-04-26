@@ -1,11 +1,7 @@
-// api.js
+// static/js/api.js
+
 async function obtenerUbicaciones() {
     const res = await fetch('/api/ubicaciones');
-    return await res.json();
-}
-
-async function obtenerCategorias() {
-    const res = await fetch('/api/categorias');
     return await res.json();
 }
 
@@ -14,6 +10,16 @@ async function agregarUbicacion(data) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
+    });
+    return res.status === 201;
+}
+
+// 🚀 NUEVO: agregar categoría
+async function agregarCategoria(nombre) {
+    const res = await fetch('/api/categorias', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: nombre })
     });
     return res.status === 201;
 }

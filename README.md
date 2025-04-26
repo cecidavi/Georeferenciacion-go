@@ -63,29 +63,3 @@ geomap/
 ├── go.mod
 ├── go.sum
 └── main.go          # Inicio del servidor
-
-🎯 Funcionalidades
-
-    Agregar nueva ubicación con nombre, descripción, latitud, longitud y categoría.
-
-    Editar ubicaciones existentes de forma visual y rápida.
-
-    Eliminar ubicaciones con confirmación SweetAlert2.
-
-    Categorías dinámicas (agregar nuevas sin recargar el mapa).
-
-    Filtrado de ubicaciones por categoría.
-
-    Buscar lugares cercanos basado en distancia (fórmula de Haversine).
-
-    Íconos personalizados dependiendo de la categoría.
-
-    Mapa interactivo para seleccionar latitud y longitud fácilmente.
-
-    👨‍💻 Autor
-
-    Nombre: Cecilio
-
-    GitHub: github.com/tu-usuario
-
-    Proyecto creado como práctica para aprender y dominar el desarrollo web en Go.
